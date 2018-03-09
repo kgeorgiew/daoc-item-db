@@ -1,29 +1,15 @@
-buildscript {
-	ext {
-		springBootVersion = '2.0.0.RELEASE'
-		junitPlatformPluginVersion = '1.1.0'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath "org.junit.platform:junit-platform-gradle-plugin:${junitPlatformPluginVersion}"
-	}
+plugins {
+  id 'java'
+  id "io.spring.dependency-management" version "1.0.4.RELEASE"
+  id "org.springframework.boot" version "2.0.0.RELEASE"
+  id "org.owasp.dependencycheck" version "3.1.1"
 }
-
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.junit.platform.gradle.plugin'
-// apply plugin: 'org.owasp.dependencycheck'
-
 
 group = 'de.kgeorgiew'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
-ext {                                     
+ext {  
     junitJupiterVersion = '5.1.0'
 	junitPlatformVersion = '1.1.0'
 }  
@@ -31,9 +17,15 @@ ext {
 test {
     failFast = true
     useJUnitPlatform {
-		// includeTags 'fast'
+		includeTags 'fast'
 		excludeTags 'slow'
 	}
+	// testLogging {
+	// 	events 'passed', 'skipped', 'failed'
+	// }
+	// reports {
+	// 	html.enabled = true
+ 	// }
 }
 
 // dependencyCheck {
@@ -77,3 +69,8 @@ dependencies {
 	// 	because 'allows tests to run from IDEs that bundle older version of launcher'
 	// }
 }
+
+ task wrapper(type: Wrapper) {
+ 	description = 'Generates gradlew[.bat] scripts'
+	gradleVersion = '4.6'
+ }
