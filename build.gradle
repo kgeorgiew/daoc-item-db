@@ -1,0 +1,79 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.0.RELEASE'
+		junitPlatformPluginVersion = '1.1.0'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "org.junit.platform:junit-platform-gradle-plugin:${junitPlatformPluginVersion}"
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.junit.platform.gradle.plugin'
+// apply plugin: 'org.owasp.dependencycheck'
+
+
+group = 'de.kgeorgiew'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+ext {                                     
+    junitJupiterVersion = '5.1.0'
+	junitPlatformVersion = '1.1.0'
+}  
+
+test {
+    failFast = true
+    useJUnitPlatform {
+		// includeTags 'fast'
+		excludeTags 'slow'
+	}
+}
+
+// dependencyCheck {
+//     skipConfigurations = ['asciidoctor']
+//     failBuildOnCVSS=11 // > 10 will never fail
+// }
+
+// Print plugin versions
+task showClasspath {
+    doLast {
+        buildscript.configurations.classpath.each { println it.name }
+    }
+}
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	// compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-webflux')
+	runtime('org.springframework.boot:spring-boot-devtools')
+	// runtime('com.h2database:h2')
+	// runtime('mysql:mysql-connector-java')
+	
+	compileOnly('org.projectlombok:lombok')
+	annotationProcessor('org.projectlombok:lombok')
+	
+	testCompile ('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit;'
+    }
+	// testCompile('io.projectreactor:reactor-test')
+
+	// JUnit Jupiter API and TestEngine implementation
+	// testCompile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+	// testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+
+	// testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}") {
+	// 	because 'allows tests to run from IDEs that bundle older version of launcher'
+	// }
+}
